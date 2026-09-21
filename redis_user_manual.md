@@ -193,17 +193,35 @@ When data changes:
 
 ## 10. View User Session Keys
 
-The User service uses keys with this prefix when Redis-backed sessions are
-created:
+The User service creates a Redis session only when a request writes data to
+`req.session`. Create a demonstration session by opening this URL:
+
+```http
+GET http://localhost:3000/api/session
+```
+
+The response contains a `sessionId` and the session cookie. Keep the same
+cookie if you want to access the same session from Postman.
+
+The User service uses keys with this prefix:
 
 ```redis
-SCAN 0 MATCH user-session:*
+SCAN 0 MATCH "user-session:*"
 ```
+```key
+GET user-session:iv5QbmFVgbcb9aOSadHnPwRWL_hP4uQU         
+````
 
 To inspect one session, use its complete key:
 
 ```redis
 GET user-session:<session-id>
+```
+
+To delete the current session:
+
+```http
+DELETE http://localhost:3000/api/session
 ```
 
 Session IDs are created by the application. Do not manually change session
